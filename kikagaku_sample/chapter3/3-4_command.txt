@@ -1,0 +1,54 @@
+# 3-4-1 sqlite3
+
+# 3-4-1-2 SQLiteの基本操作
+
+$ sqlite3 test.db
+
+sqlite> create table users(id integer primary key autoincrement, name text, age integer);
+
+sqlite> .tables
+
+sqlite> insert into users(name, age) values('Yoshizaki', 27);
+sqlite> insert into users(name, age) values('Kikagaku', 2);
+
+sqlite> select * from users;
+
+sqlite> .exit
+
+# 3-4-2 PostgreSQL
+
+## 3-4-2-1 環境構築
+
+$ brew update
+$ brew install postgresql
+
+## 3-4-2-2 PostgreSQLの基本操作
+
+$ mkdir postgres
+
+$ initdb -D ./postgres -U postgres -E utf8 -W
+
+$ pg_ctl start -D ./postgres/
+
+$ psql -d postgres -U postgres -W
+
+postgres=# create database test;
+
+postgres=# \c test
+
+test=# create table users(id serial primary key, name text, age integer);
+
+test=# insert into users(name, age) values('Yoshizaki', 27);
+tests=# insert into users(name, age) values('Kikagaku', 2);
+
+test=# select *from users;
+
+test=# \q
+
+$ pg_ctl stop -D ./postgres/
+
+# 3-4-3 ipython-sql
+
+## 3-4-3-1 データベースとの接続
+
+$ pg_ctl start -D ./postgres/

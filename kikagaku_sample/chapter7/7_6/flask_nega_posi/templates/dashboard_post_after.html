@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <!-- This file has been downloaded from Bootsnipp.com. Enjoy! -->
+    <title>結果|ネガポジ分析ツールfor Instagram</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!--下部のJSscriptで動的にCSS/JSを排出。なお、heroku にアップロードした際に、sslのリンクでないとエラーとなってしまうのでcdnはhttpではなく、httpsで統一する必要がある-->
+
+        <!--CSS-->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.css">
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="../static/css/dashboard.css">
+
+      <!--JS-->
+    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script></head>
+<body>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/jquery.magnific-popup.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.css" />
+
+
+<div class="container">
+
+   <nav class="navbar fixed-top navbar-expand-md custom-navbar navbar-dark">
+      <a class="navbar-brand nav-link" href="/dashboard"><b>ハッシュタグネガポジ分析</b></a>
+   
+             <button class="navbar-toggler navbar-toggler-right custom-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+                 <span class="navbar-toggler-icon "></span>
+             </button>
+             {% if(hashtag_error_message) %}
+              <div class="collapse navbar-collapse " id="collapsibleNavbar">
+                   <ul class="navbar-nav ml-auto ">
+                      <li class="nav-item">
+                          <a class="nav-link" href="/dashboard"><b>ハッシュタグを再検索</b></a>
+                       </li>
+
+                  <li class="nav-item">
+                    <a class="nav-link" href="/logout"><b>logout</b></a>
+                 </li>
+
+                </ul>                    
+              </div>
+               {% elif(hashtag_error_message_negaposi) %}
+              <div class="collapse navbar-collapse " id="collapsibleNavbar">
+                   <ul class="navbar-nav ml-auto ">
+                      <li class="nav-item">
+                          <a class="nav-link" href="/dashboard"><b>ハッシュタグを再検索</b></a>
+                       </li>
+               
+                    <li class="nav-item">
+                      <form name="form1" action="/post_good?hashtag_name={{hashtag_name}}&hashtag_error_message_negaposi={{hashtag_error_message_negaposi}}" method="post" >
+                        <input type="hidden" name="user_name" value="{{azure_json}}">
+                      <a class="nav-link" href="javascript:form1.submit()"><b>いいね数ランキング</b></a>
+                      </form>
+                    </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/logout"><b>logout</b></a>
+                 </li>
+
+                </ul>                    
+              </div>
+                
+            {% else %}
+               <div class="collapse navbar-collapse " id="collapsibleNavbar">
+                   <ul class="navbar-nav ml-auto ">
+                      <li class="nav-item">
+                          <a class="nav-link" href="/dashboard"><b>ハッシュタグを再検索</b></a>
+                       </li>     
+
+                      <li class="nav-item">
+                          <form name="form1" action="/post_good?hashtag_name={{hashtag_name}}&hashtag_error_message_negaposi={{hashtag_error_message_negaposi}}" method="post" >
+                            <input type="hidden" name="user_name" value="{{azure_json}}">
+                          <a class="nav-link" href="javascript:form1.submit()"><b>いいね数ランキング</b></a>
+                          </form>
+                       </li>
+                      <li class="nav-item">
+                        <form name="form2" action="/post_nega?hashtag_name={{hashtag_name}}&hashtag_error_message_negaposi={{hashtag_error_message_negaposi}}" method="post" >
+                          <input type="hidden" name="user_name" value="{{azure_json}}">
+                        <a class="nav-link" href="javascript:form2.submit()"><b>ネガティブ投稿ランキング</b></a>
+                        </form>
+                      </li>
+                      <li class="nav-item">
+                        <form name="form3" action="/post_posi?hashtag_name={{hashtag_name}}&hashtag_error_message_negaposi={{hashtag_error_message_negaposi}}" method="post" >
+                          <input type="hidden" name="user_name" value="{{azure_json}}">
+                        <a class="nav-link" href="javascript:form3.submit()"><b>ポジティブ投稿ランキング</b></a>
+                        </form>
+                      </li>
+                      <li class="nav-item">
+                          <a class="nav-link" href="/logout"><b>logout</b></a>
+                       </li>
+                   </ul>
+               </div>
+          {% endif %}
+   </nav>
+
+
+<!--<header id="page-top">-->
+</br></br></br></br>
+
+         <div class="row">
+            <div class="col-lg-12 text-center my-2 portfolio-menu mt-2 mb-4">
+              {% if(HASHTAG_POSTS_POSI) %}
+              <br/><h4>ポジティブ投稿ランキング</h4>
+              １に近いほどポジティブな投稿を、０に近いほどネガティブな投稿である可能性を表します<br/>
+
+              {% endif %}
+              {% if(HASHTAG_POSTS_NEGA) %}
+              <br/><h4>ネガティブ投稿ランキング</h4>
+              １に近いほどポジティブな投稿を、０に近いほどネガティブな投稿である可能性を表します<br/>
+              {% endif %}
+              {% if(HASHTAG_POSTS_GOOD) %}
+              <br/><h4>いいね数投稿ランキング</h4><br/>
+              {% endif %}
+              
+               <br/><h4>#{{hashtag_name}}</h4>
+                                <!-- preloader　始まり-->
+
+                 <div id="progressBar" style="display:none;"></div>
+                 <div id="progressBar-text" style="display:none;"></div>
+
+
+
+          {% if(hashtag_error_message) %}
+          </br></br></br></br>
+          <center><h5>{{hashtag_error_message}}</h5></center>
+          {% elif(hashtag_error_message_negaposi) %}
+          </br></br></br></br>
+          <center><h5>{{hashtag_error_message_negaposi}}</h5></center>
+          {% endif %}
+  
+            </div>
+         </div>
+
+         <div class="portfolio-item row">
+
+<!-- いいね数順に並べる　始まり-->
+        {% if(HASHTAG_POSTS_GOOD) %}
+            {%for azure_post_single in azure_json|sort(attribute='like_count', reverse = True) %}
+            {% if(azure_post_single['media_type']=='IMAGE') %}
+              <div class="item col-lg-3 col-md-4 col-6 col-sm">
+
+                   <a href={{azure_post_single['permalink']}} target="_blank">
+                        <img class="img-fluid" src={{azure_post_single['media_url']}}>
+                      </a>
+                       <p class="card-text">
+                         いいね数：{{azure_post_single['like_count']}}</br>
+                         コメント数：{{azure_post_single['comments_count']}}</br>
+                         ネガポジ度：{{azure_post_single['score']}}
+                       </p>
+              </div>
+               {% elif(azure_post_single['media_type']=='CAROUSEL_ALBUM') %}
+                    
+                    {%if (0 <= azure_post_single['media_url'].find('.mp4'))%}
+
+                       <div class="item col-lg-3 col-md-4 col-6 col-sm">
+                               <a href={{azure_post_single['permalink']}} target="_blank">
+                                 <video class="img-fluid" src={{azure_post_single['media_url']}} autoplay loop controls muted>
+                               </video>
+                               </a>
+                                <p class="card-text">
+                                  いいね数：{{azure_post_single['like_count']}}</br>
+                                  コメント数：{{azure_post_single['comments_count']}}</br>
+                                  ネガポジ度：{{azure_post_single['score']}}
+                                </p>
+
+                       </div>                            
+
+                    {% else %}
+              <div class="item col-lg-3 col-md-4 col-6 col-sm">
+
+                  <a href={{azure_post_single['permalink']}} target="_blank">                  
+                     <img class="img-fluid" src={{azure_post_single['media_url']}}>
+                      </img>
+                 </a>
+                       <p class="card-text">
+                         いいね数：{{azure_post_single['like_count']}}</br>
+                         コメント数：{{azure_post_single['comments_count']}}</br>
+                         ネガポジ度：{{azure_post_single['score']}}
+                       </p>
+
+              </div>
+                    {% endif %} 
+              {% elif(azure_post_single['media_type']=='VIDEO') %}
+              <div class="item col-lg-3 col-md-4 col-6 col-sm">
+                  <a href={{azure_post_single['permalink']}} target="_blank">
+                      <video class="img-fluid" src={{azure_post_single['media_url']}} autoplay loop controls muted>
+                      </video>
+                  </a>
+                       <p class="card-text">
+                         いいね数：{{azure_post_single['like_count']}}</br>
+                         コメント数：{{azure_post_single['comments_count']}}</br>
+                         ネガポジ度：{{azure_post_single['score']}}
+                       </p>
+
+              </div>               
+              {% endif %}     
+              {% endfor %}
+
+<!-- いいね数順に並べる　終わり-->
+
+<!-- positive順に並べる　始まり-->
+        {% elif(HASHTAG_POSTS_POSI) %}
+            {%for azure_post_single in azure_json|sort(attribute='score', reverse = True) %}
+
+            {% if(azure_post_single['media_type']=='IMAGE') %}
+              <div class="item col-lg-3 col-md-4 col-6 col-sm">
+
+                   <a href={{azure_post_single['permalink']}} target="_blank">
+                        <img class="img-fluid" src={{azure_post_single['media_url']}}>
+                      </a>
+                       <p class="card-text">
+                         いいね数：{{azure_post_single['like_count']}}</br>
+                         コメント数：{{azure_post_single['comments_count']}}</br>
+                         ネガポジ度：{{azure_post_single['score']}}
+                       </p>
+              </div>
+               {% elif(azure_post_single['media_type']=='CAROUSEL_ALBUM') %}
+                    
+                    {%if (0 <= azure_post_single['media_url'].find('.mp4'))%}
+
+                       <div class="item col-lg-3 col-md-4 col-6 col-sm">
+                               <a href={{azure_post_single['permalink']}} target="_blank">
+                                 <video class="img-fluid" src={{azure_post_single['media_url']}} autoplay loop controls muted>
+                               </video>
+                               </a>
+                                <p class="card-text">
+                                  いいね数：{{azure_post_single['like_count']}}</br>
+                                  コメント数：{{azure_post_single['comments_count']}}</br>
+                                  ネガポジ度：{{azure_post_single['score']}}
+                                </p>
+
+                       </div>                            
+
+                    {% else %}
+              <div class="item col-lg-3 col-md-4 col-6 col-sm">
+
+                  <a href={{azure_post_single['permalink']}} target="_blank">                  
+                     <img class="img-fluid" src={{azure_post_single['media_url']}}>
+                      </img>
+                 </a>
+                       <p class="card-text">
+                         いいね数：{{azure_post_single['like_count']}}</br>
+                         コメント数：{{azure_post_single['comments_count']}}</br>
+                         ネガポジ度：{{azure_post_single['score']}}
+                       </p>
+
+              </div>
+                    {% endif %} 
+              {% elif(azure_post_single['media_type']=='VIDEO') %}
+              <div class="item col-lg-3 col-md-4 col-6 col-sm">
+                  <a href={{azure_post_single['permalink']}} target="_blank">
+                      <video class="img-fluid" src={{azure_post_single['media_url']}} autoplay loop controls muted>
+                      </video>
+                  </a>
+                       <p class="card-text">
+                         いいね数：{{azure_post_single['like_count']}}</br>
+                         コメント数：{{azure_post_single['comments_count']}}</br>
+                         ネガポジ度：{{azure_post_single['score']}}
+                       </p>
+
+              </div>               
+              {% endif %}     
+              {% endfor %}
+
+<!-- positive順に並べる　終わり-->
+
+<!-- negative順に並べる　始まり-->
+        {% elif(HASHTAG_POSTS_NEGA) %}
+            {%for azure_post_single in azure_json|sort(attribute='score') %}
+            {% if(azure_post_single['media_type']=='IMAGE') %}
+              <div class="item col-lg-3 col-md-4 col-6 col-sm">
+
+                   <a href={{azure_post_single['permalink']}} target="_blank">
+                        <img class="img-fluid" src={{azure_post_single['media_url']}}>
+                      </a>
+                       <p class="card-text">
+                         いいね数：{{azure_post_single['like_count']}}</br>
+                         コメント数：{{azure_post_single['comments_count']}}</br>
+                         ネガポジ度：{{azure_post_single['score']}}
+                       </p>
+              </div>
+               {% elif(azure_post_single['media_type']=='CAROUSEL_ALBUM') %}
+                    
+                    {%if (0 <= azure_post_single['media_url'].find('.mp4'))%}
+
+                       <div class="item col-lg-3 col-md-4 col-6 col-sm">
+                               <a href={{azure_post_single['permalink']}} target="_blank">
+                                 <video class="img-fluid" src={{azure_post_single['media_url']}} autoplay loop controls muted>
+                               </video>
+                               </a>
+                                <p class="card-text">
+                                  いいね数：{{azure_post_single['like_count']}}</br>
+                                  コメント数：{{azure_post_single['comments_count']}}</br>
+                                  ネガポジ度：{{azure_post_single['score']}}
+                                </p>
+
+                       </div>                            
+
+             
+          {% else %}
+              <div class="item col-lg-3 col-md-4 col-6 col-sm">
+
+                  <a href={{azure_post_single['permalink']}} target="_blank">                  
+                     <img class="img-fluid" src={{azure_post_single['media_url']}}>
+                      </img>
+                 </a>
+                       <p class="card-text">
+                         いいね数：{{azure_post_single['like_count']}}</br>
+                         コメント数：{{azure_post_single['comments_count']}}</br>
+                         ネガポジ度：{{azure_post_single['score']}}
+                       </p>
+
+              </div>
+                    {% endif %} 
+              {% elif(azure_post_single['media_type']=='VIDEO') %}
+              <div class="item col-lg-3 col-md-4 col-6 col-sm">
+                  <a href={{azure_post_single['permalink']}} target="_blank">
+                      <video class="img-fluid" src={{azure_post_single['media_url']}} autoplay loop controls muted>
+                      </video>
+                  </a>
+                       <p class="card-text">
+                         いいね数：{{azure_post_single['like_count']}}</br>
+                         コメント数：{{azure_post_single['comments_count']}}</br>
+                         ネガポジ度：{{azure_post_single['score']}}
+                       </p>
+
+              </div>               
+              {% endif %}     
+              {% endfor %}
+
+        
+<!-- negative順に並べる　終わり-->
+        
+<!-- ハッシュタグ検索　始まり-->
+        {% else %}
+           {%for azure_post_single in azure_json %}
+            {% if(azure_post_single['media_type']=='IMAGE') %}
+              <div class="item col-lg-3 col-md-4 col-6 col-sm">
+
+                   <a href={{azure_post_single['permalink']}} target="_blank">
+                        <img class="img-fluid" src={{azure_post_single['media_url']}}>
+                      </a>
+                       <p class="card-text">
+                         いいね数：{{azure_post_single['like_count']}}</br>
+                         コメント数：{{azure_post_single['comments_count']}}</br>
+                         ネガポジ度：{{azure_post_single['score']}}
+                       </p>
+              </div>
+               {% elif(azure_post_single['media_type']=='CAROUSEL_ALBUM') %}
+
+                    {%if (0 <= azure_post_single['media_url'].find('.mp4'))%}
+
+
+                  <div class="item col-lg-3 col-md-4 col-6 col-sm">
+                    <a href={{azure_post_single['permalink']}} target="_blank">
+                    <video class="img-fluid" src={{azure_post_single['media_url']}} autoplay loop controls muted>
+                               </video>
+                               </a>
+                                <p class="card-text">
+                                  いいね数：{{azure_post_single['like_count']}}</br>
+                                  コメント数：{{azure_post_single['comments_count']}}</br>
+                                  ネガポジ度：{{azure_post_single['score']}}
+                                </p>
+
+                       </div>                            
+
+             
+          {% else %}
+              <div class="item col-lg-3 col-md-4 col-6 col-sm">
+
+                  <a href={{azure_post_single['permalink']}} target="_blank">                  
+                     <img class="img-fluid" src={{azure_post_single['media_url']}}>
+                      </img>
+                 </a>
+                       <p class="card-text">
+                         いいね数：{{azure_post_single['like_count']}}</br>
+                         コメント数：{{azure_post_single['comments_count']}}</br>
+                         ネガポジ度：{{azure_post_single['score']}}
+                       </p>
+
+              </div>
+                    {% endif %} 
+              {% elif(azure_post_single['media_type']=='VIDEO') %}
+              <div class="item col-lg-3 col-md-4 col-6 col-sm">
+                  <a href={{azure_post_single['permalink']}} target="_blank">
+                      <video class="img-fluid" src={{azure_post_single['media_url']}} autoplay loop controls muted>
+                      </video>
+                  </a>
+                       <p class="card-text">
+                         いいね数：{{azure_post_single['like_count']}}</br>
+                         コメント数：{{azure_post_single['comments_count']}}</br>
+                         ネガポジ度：{{azure_post_single['score']}}
+                       </p>
+
+              </div>               
+              {% endif %}     
+              {% endfor %}
+<!-- ハッシュタグ検索　終わり-->
+          {% endif %}
+
+         </div>
+</div>
+
+
+
+
+<script type="text/javascript">
+
+//キャッシュバスティング　js
+
+var versioningNum = new Date().getTime()
+var cssURL = 'https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.js?ver=' + versioningNum
+var jsElement=document.createElement('script')
+jsElement.setAttribute('src', cssURL)
+document.getElementsByTagName("body")[0].appendChild(jsElement)
+
+//  画像も含めページが読み込まれたらisotopeを処理しないと、function errorとなる
+$(window).load(function(){
+
+// 動画が読みこみ終わったら発火
+$('video').load(function () {
+
+    //実行スクリプト
+          $('.portfolio-item').isotope({
+          itemSelector: '.item',
+          layoutMode: 'fitRows'
+         });
+         $('.portfolio-menu ul li').click(function(){
+          $('.portfolio-menu ul li').removeClass('active');
+          $(this).addClass('active');
+          
+          var selector = $(this).attr('data-filter');
+          $('.portfolio-item').isotope({
+            filter:selector
+          });
+          return  false;
+         });
+         $(document).ready(function() {
+         var popup_btn = $('.popup-btn');
+         popup_btn.magnificPopup({
+         type : 'image',
+         gallery : {
+          enabled : true
+         }
+         });
+         });
+
+  });
+});
+
+
+//aリンクの処理
+function a_link(num){
+   $('.nav-link').click(function(event){
+     $(this).data("click", ++num);
+
+  var click = $(this).data("click");
+  if(click >= 2){
+
+   //2度押し防止
+    event.preventDefault();
+    alert('只今処理中です。\nそのままお待ちください。');
+    return false;
+  }
+
+    $(this).data("click", ++num);
+    var click = $(this).data("click");
+
+  //clickを１度キャンセル
+    event.preventDefault();
+    var linkUrl = $(this).attr('href');
+
+  //loaderの起動
+    document.getElementById("progressBar").style.display = "";
+    $("#progressBar").prepend('<div class="item-1"></div><div class="item-2"></div><div class="item-3"></div><div class="item-4"></div><div class="item-5"></div>');
+    document.getElementById("progressBar-text").style.display = "";
+    $("#progressBar-text").prepend('<span>now loading</span>');
+
+  //ちょっとずらしてclick
+      setTimeout(function(){
+        location.href = linkUrl;
+ 
+    
+      }, 1000);
+  });
+}
+
+
+var num = 0;
+a_link(num);
+
+
+
+</script>
+
+</body>
+</html>

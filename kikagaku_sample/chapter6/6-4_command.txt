@@ -1,0 +1,40 @@
+# 6-4-4 Herokuで定期実行
+
+## 6-4-4-1 スクリプトとしてまとめる
+
+# Windowsの場合
+$ python main.py
+
+# macOSの場合
+$ python3 main.py
+
+## 6-4-4-2 デプロイ
+
+$ cd summpy
+$ rm -rf .git
+
+$ heroku login
+
+$ heroku create -a slack-news-kikagaku
+
+$ heroku buildpacks:set heroku/python -a slack-news-kikagaku
+$ heroku buildpacks:add https://github.com/heroku/heroku-buildpack-chromedriver.git -a slack-news-kikagaku
+$ heroku buildpacks:add https://github.com/heroku/heroku-buildpack-google-chrome.git -a slack-news-kikagaku
+
+$ git init
+$ heroku git:remote -a slack-news-kikagaku
+$ git add .
+$ git commit -m 'deploy heroku'
+$ git push heroku master
+
+# Windowsの場合
+$ heroku run python main.py
+
+# macOSの場合
+$ heroku run python3 main.py
+
+## 6-4-4-3 Heroku Schedulerでスケジュール設定
+
+$ heroku addons:add scheduler:standard
+$ heroku addons:open scheduler
+

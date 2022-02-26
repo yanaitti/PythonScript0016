@@ -1,0 +1,8 @@
+# 4-4-1 環境構築
+
+## 4-4-1-6 コンテナの起動
+
+$ docker-compose up -d
+
+$ docker-compose ps
+

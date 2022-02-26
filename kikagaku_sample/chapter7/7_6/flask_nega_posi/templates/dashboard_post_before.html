@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <!-- This file has been downloaded from Bootsnipp.com. Enjoy! -->
+    <title> ネガポジ分析|ネガポジ分析ツールFOR Instagram</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!--下部のJSscriptで動的にCSS/JSを排出。なお、heroku にアップロードした際に、sslのリンクでないとエラーとなってしまうのでcdnはhttpではなく、httpsで統一する必要がある-->
+
+        <!--CSS-->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.css">
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="../static/css/dashboard.css">
+
+      <!--JS-->
+    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script></head>
+
+
+</head>
+<body>
+     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/jquery.magnific-popup.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.css" />
+
+<div class="container">
+   <nav class="navbar fixed-top navbar-expand-md custom-navbar navbar-dark">
+      <div class="navbar-brand nav-link" ><b>ハッシュタグネガポジ分析</b></div>
+   
+             <button class="navbar-toggler navbar-toggler-right custom-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+                 <span class="navbar-toggler-icon"></span>
+             </button>
+               <div class="collapse navbar-collapse " id="collapsibleNavbar">
+                   <ul class="navbar-nav ml-auto ">
+
+                      <li class="nav-item">
+                          <a class="nav-link" href="/logout"><b>logout</b></a>
+                       </li>
+                   </ul>
+               </div>  
+   </nav>
+</br></br></br></br>
+
+<header id="page-top">
+      <div class="row">
+            <div class="col-lg-12 text-center my-2">
+          {% if(hashtag_error_message) %}
+          </br>
+            </br>
+              </br>
+                  </br>
+          <center><h5>{{hashtag_error_message}}</h5></center>
+          {% else %}
+          
+              <br/><h5>Instagram上のハッシュタグ（人気投稿を抽出。最大１００件）</br>
+                のネガポジ分析（microsoft azureテキスト解析）を行えます。</br>
+            ※製品・ブランドに対するお客様の声をネガティブ・ポジティブな側面から分析することで</br>
+            インサイトの発見や製品改善など、マーケティング活動をサポートします</br>
+                  任意のハッシュタグを入力し「ネガポジ分析をする」をクリックしてください</h5>
+          {% endif %}
+            </br>
+              </br>
+                </br>
+                  </br>
+                    </br>
+                      <div class="row justify-content-center">
+                                    <div class="col-12 col-md-10 col-lg-8">
+                                      <form id="form2" name="search_form" action="/post" method="post" class="card card-sm">
+                                         <!-- <form name="search_form" action="/post" method="post" class="card card-sm"> -->
+                                            <div class="card-body row no-gutters align-items-center">
+                                                <div class="col-auto">
+                                                    <i class="fas fa-search h4 text-body"></i>
+                                                </div>
+                                                <!--end of col-->
+                                                <div class="col">
+                                                    <input class="form-control form-control-lg form-control-borderless" type="text" id="hashtag_name" name="hashtag_name" placeholder="Search hashtag">
+                                                </div>
+                                                <!--end of col-->
+                                                <div id="submitButtonDiv" class="col-auto d-none d-md-block">
+                                                    <button class="btn btn-lg btn-info" type="submit">ネガポジ分析する</button>
+                                                    <!--<button class="btn btn-lg btn-info " type="submit">ネガポジ分析する</button>-->                                                
+                                                </div>
+                                                <!--end of col-->
+                                          </div>
+                                                <button id="submitButtonDiv" class="btn btn-lg btn-info d-block d-md-none" type="submit">ネガポジ分析する</button>
+
+                                        </form>
+    
+                                         <div id="progressBar" style="display:none;"></div>
+                                         <div id="progressBar-text" style="display:none;"></div> 
+           
+                                    </div>
+
+                        <!--end of col-->
+                         </div>
+                </br>
+                  </br>
+                    </br>
+                        </br><h5>直近７日間で検索したハッシュタグ</br>
+                          </br>(最大30件/7日　まで検索可(現在：{{len_id_name_json_dict}}件)</h5>
+                          </br>
+                                  {%for hashtag_name in id_name_json_dict %}
+                                  {{ loop.index }}
+                                  {{ item }}
+                                  <a href="/post?hashtag_name={{hashtag_name['name']}}">{{hashtag_name['name']}}</a>
+
+
+                                  {% if loop.index % 5 == 0 %}
+                                  </br>
+                                  {% endif %} 
+                                  {%endfor%}
+
+                 </div>
+    </div>
+
+</div>
+
+
+
+<script>
+(function(){
+ 
+  var elem2 = document.getElementById('form2');
+  elem2.addEventListener('submit', function(e) {
+    //submitを１度キャンセル
+    e.preventDefault();
+
+    //
+      var a=document.search_form.hashtag_name.value;
+        if(a==""){
+          return false;
+        }else if(!a.match(/\S/g)){
+          return false;
+        }
+        document.getElementById("progressBar").style.display = "";
+        $("#progressBar").prepend('<div class="item-1"></div><div class="item-2"></div><div class="item-3"></div><div class="item-4"></div><div class="item-5"></div>');
+        document.getElementById("progressBar-text").style.display = "";
+        $("#progressBar-text").prepend('<span>抽出・分析中</span>');
+
+
+        //ちょっとずらしてsubmit
+        setTimeout(function(){
+          elem2.submit();
+       $(":submit").prop('disabled', true);
+        }, 1000);
+        //2度押し禁止
+        $(this).click(function () {
+       $(":submit").prop('disabled', true);        
+        alert('只今処理中です。\nそのままお待ちください。');
+        return false;
+    });
+      });
+}());
+
+
+//aリンクの処理
+function a_link(num){
+   $('a').click(function(event){
+     $(this).data("click", ++num);
+
+  var click = $(this).data("click");
+  if(click >= 2){
+
+   //2度押し防止
+    event.preventDefault();
+    alert('只今処理中です。\nそのままお待ちください。');
+    return false;
+  }
+
+    $(this).data("click", ++num);
+    var click = $(this).data("click");
+
+  //clickを１度キャンセル
+    event.preventDefault();
+    var linkUrl = $(this).attr('href');
+
+  //aタグに入ってるテキストを挿入
+    var thisText = $(this).text();
+    $("#hashtag_name").val(thisText);
+
+  //loaderの起動
+    document.getElementById("progressBar").style.display = "";
+    $("#progressBar").prepend('<div class="item-1"></div><div class="item-2"></div><div class="item-3"></div><div class="item-4"></div><div class="item-5"></div>');
+    document.getElementById("progressBar-text").style.display = "";
+    $("#progressBar-text").prepend('<span>抽出・分析中</span>');
+
+//formボタンもクリックできないようにする
+  $(":submit").prop('disabled', true); 
+
+  //ちょっとずらしてclick
+      setTimeout(function(){
+        location.href = linkUrl;
+ 
+    
+      }, 1000);
+  });
+}
+
+
+var num = 0;
+a_link(num);
+
+
+</script>
+
+</body>
+</html>

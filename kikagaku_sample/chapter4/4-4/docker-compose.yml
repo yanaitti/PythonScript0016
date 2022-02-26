@@ -1,0 +1,39 @@
+version: '3'
+services:
+  db:
+    env_file: ./.env
+    build:
+      context: .
+      dockerfile: ./Dockerfile-db
+    volumes:
+      - pgdata_store:/var/lib/postgresql/data
+      - "${SCRIPTS_SRC}:/opt/analysis"
+    restart: always
+    ports:
+      - "5432:5432"
+    networks:
+      - mlnet
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+  jupyter:
+    env_file: ./.env
+    build:
+      context: .
+      dockerfile: ./Dockerfile-jupyter
+    restart: always
+    volumes:
+      - "${SCRIPTS_SRC}:/opt/analysis"
+    depends_on:
+      - db
+    ports:
+      - "8888:8888"
+    networks:
+      - mlnet
+
+volumes:
+  pgdata_store:
+    driver: local
+networks:
+  mlnet:
+    driver: bridge

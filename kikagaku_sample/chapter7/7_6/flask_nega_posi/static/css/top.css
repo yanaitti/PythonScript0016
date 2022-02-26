@@ -1,0 +1,43 @@
+@charset "UTF-8";
+body {
+
+font-family: "proxima-nova", sans-serif;
+
+  text-align: center;
+  font-size: 150%;
+  font-weight: 100;
+}
+
+.btn {
+  font-size: 100%;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border: 0;
+  background-color: #E91E63;
+  color: white;
+}
+.btn:hover {
+  background-color: #f787ad;
+  color: white;
+}
+.btn:focus {
+  outline: none !important;
+}
+.btn.btn-lg {
+  padding: 20px 30px;
+}
+.btn:disabled {
+  background-color: #333;
+  color: #666;
+}
+
+h2 {
+  font-weight: 100;
+  margin-top: 30px;
+  margin-bottom: 40px;
+  font-size: 150%;
+}
+
+.col-md-12{
+  word-wrap:break-word;
+}

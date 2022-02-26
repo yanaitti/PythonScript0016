@@ -1,0 +1,55 @@
+# 3-6-1 Gitの全体像
+
+## 3-6-1-1 ローカルリポジトリへのコミット
+
+ls
+
+ls -a
+
+qwd
+
+git init
+
+ls -a
+
+touch sample1.txt
+touch sample2.txt
+
+git add sample1.txt
+
+git status
+
+git commit -m 'first commit'
+
+## 3-6-1-2 ブランチを分けて機能開発
+
+$ git branch
+
+$ git checkout -b Python
+
+$ git branch
+
+$ cat sample1.txt
+
+$ git add sample1.txt
+$ git commit -m 'Update sample1.txt'
+
+$ git checkout master
+$ cat sample1.txt
+$ git merge Python
+
+$ cat sample1.txt
+
+## 3-6-1-3 リモートリポジトリへ反映
+
+$ git remote -v
+
+$ git remote add origin https://github.com/kikagaku/git_test.git
+
+$ git remote -v
+
+$ git push origin master
+
+$ git add .
+$ git commit -m 'Add sample2
+$ git push origin master

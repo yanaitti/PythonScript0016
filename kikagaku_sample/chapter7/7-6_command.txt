@@ -1,0 +1,7 @@
+# 7-6-3 ƒ[ƒJƒ‹URL‚Ì“o˜^
+
+# Windows‚Ìê‡
+python view.py
+
+# macOS‚Ìê‡
+python3 view.py

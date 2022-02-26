@@ -1,0 +1,50 @@
+# Chapter3-8 Dockerによる仮想環境構築
+
+$ docker login
+
+# 3-8-2 コンテナの操作
+
+## 3-8-2-1 イメージのダウンロード
+
+$ docker pull python
+
+$ docker images
+
+$ docker pull python:3.7
+
+##3-8-2-2 コンテナの立ち上げ
+
+$ docker run python:3.7
+
+$ docker ps -a
+
+$ docker run -it python:3.7
+
+$ docker run -it python:3.7 /bin/bash
+root@8fb75f2f34b1:/# pip install flask
+root@8fb75f2f34b1:/# python
+>>> import flask
+>>> exit()
+
+$ docker run -it python:3.7 /bin/bash
+root@361acbc898d4:/# python
+>>> import flask
+
+$ docker start -i confident_bassi
+$ python
+>>> import flask
+>>> exit()
+
+## 3-8-2-3 コンテナをイメージ化
+
+$ docker commit confident_bassi kikagaku/docker-test
+
+$ docker images
+
+$ docker push kikagaku/docker-test
+
+# 3-8-3　Dockerfile
+
+$ docker build -t kikagaku/docker-test:1.0 .
+
+$ docker push kikagaku/docker-test:1.0

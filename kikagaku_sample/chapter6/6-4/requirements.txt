@@ -1,0 +1,7 @@
+selenium==3.141.0
+Janome==0.3.9
+gensim==3.7.3
+requests==2.20.1
+joblib==0.13.2
+scikit-learn==0.21.2
+networkx==2.3

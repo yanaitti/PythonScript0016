@@ -1,0 +1,16 @@
+# 5-5-2 ƒfƒvƒƒC
+
+$ heroku login --interactive
+
+$ heroku create fishclassification
+
+$ git init
+$ heroku git:remote -a fishclassification
+
+$ heroku buildpacks:set heroku/python
+
+$ heroku addons:create heroku-postgresql:hobby-dev
+
+$ git add .
+$ git commit -m "first deploy"
+$ git push heroku master

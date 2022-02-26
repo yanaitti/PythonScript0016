@@ -1,0 +1,5 @@
+# 6-2-3 Summpy‚ğg‚Á‚½•¶Í—v–ñ
+
+## 6-2-3-1 Summpy‚ğg‚¤€”õ
+
+$ git clone https://github.com/kikagaku/summpy.git

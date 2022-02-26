@@ -1,0 +1,31 @@
+# 4-2-3 Docker Composeを用いた環境構築
+
+## 4-2-3-5 コンテナのビルド
+
+$ docker-compose build
+
+## 4-2-3-6 Docker Composeを用いた複数コンテナの起動
+
+$ docker-compose up -d
+
+$ docker-compose ps
+
+# 4-2-4 DBコンテナの確認
+
+## 4-2-4-1 PostgreSQL
+
+$ docker exit -it mltest_db_1 psql -U testuser
+
+testuser=# \l
+
+testuser=# create database test_db_1
+
+# 4-2-5 分析コンテナの確認
+
+docker exec mltest_jupyter_1 jupytert notebook list
+
+# 4-2-6 コンテナの停止
+
+docker-compose stop
+
+docker-compose ps

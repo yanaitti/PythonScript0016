@@ -1,0 +1,13 @@
+version: '3'
+services:
+  db:
+    image: postgres:11.2-alpine
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+  jupyter:
+    image: jupyter/scipy-notebook:65761486d5d3
+    volumes:
+      - ./:/home/notebook
+    ports:
+      - "8888:8888"

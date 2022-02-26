@@ -1,0 +1,4 @@
+# Base Image
+FROM postgres:11.2-alpine
+
+COPY scripts/initdb/* /docker-entrypoint-initdb.d/
